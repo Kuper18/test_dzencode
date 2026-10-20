@@ -1,0 +1,15 @@
+.venv/
+.env
+
+# IDE
+.idea/
+
+# Database
+db.sqlite3
+
+# Python
+__pycache__/
+*.pyc
+
+# Tools
+.ruff_cache/

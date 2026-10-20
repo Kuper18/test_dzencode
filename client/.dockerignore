@@ -1,0 +1,39 @@
+# Dependencies (install inside the image instead)
+node_modules/
+
+# Build output (generated inside the image)
+dist/
+build/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Caches
+.vite/
+.eslintcache
+.cache/
+coverage/
+
+# IDE
+.idea/
+.vscode/
+
+# Git and Docker files
+.git/
+.gitignore
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Misc
+*.md
+.DS_Store
