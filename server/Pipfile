@@ -6,8 +6,11 @@ name = "pypi"
 [packages]
 django = "*"
 psycopg = {extras = ["binary"], version = "*"}
+djangorestframework-simplejwt = "*"
+djangorestframework = "*"
 
 [dev-packages]
+ruff = "*"
 
 [requires]
 python_version = "3.14"
