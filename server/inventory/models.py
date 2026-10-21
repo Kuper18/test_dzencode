@@ -1,5 +1,3 @@
-from typing import ClassVar
-
 from django.db import models
 from django.db.models import UniqueConstraint
 
@@ -29,7 +27,7 @@ class ProductPrice(models.Model):
             UniqueConstraint(
                 fields=["product", "currency"],
                 name="unique_product_currency",
-            )
+            ),
         )
 
     def __str__(self):

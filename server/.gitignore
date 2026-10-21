@@ -3,6 +3,7 @@
 
 # IDE
 .idea/
+.idea
 
 # Database
 db.sqlite3
