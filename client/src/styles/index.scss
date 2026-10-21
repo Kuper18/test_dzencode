@@ -1,0 +1,19 @@
+@import "bootstrap/scss/bootstrap";
+
+body {
+  margin: 0;
+  background-color: #f5f7fb;
+  color: #172b4d;
+}
+
+.topbar {
+  min-height: 56px;
+}
+
+.dashboard-layout {
+  min-height: 100vh;
+}
+
+.dashboard-body {
+  min-height: calc(100vh - 56px);
+}
