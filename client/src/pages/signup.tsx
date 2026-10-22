@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Card, Container, Form } from 'react-bootstrap';
+import { Button, Card, Container, Form, Spinner } from 'react-bootstrap';
 import { signupSchema, type SignupFormData } from '../schemas/auth';
 import { Link } from 'react-router';
 import CLIENT_ROUTES from '../constants/client-routes';
@@ -10,7 +10,8 @@ const Signup = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    setError,
+    formState: { errors },
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
@@ -22,10 +23,9 @@ const Signup = () => {
     },
   });
 
-  const { mutate: signup } = useSignup();
+  const { mutate: signup, isPending } = useSignup(setError);
 
   const onSubmit = async (data: SignupFormData) => {
-    console.log('Signup data:', data);
     const { confirmPassword: _, ...signupData } = data;
     signup(signupData);
   };
@@ -109,13 +109,25 @@ const Signup = () => {
               </Form.Control.Feedback>
             </Form.Group>
 
+            {errors.root?.server && (
+              <p className="text-danger">{errors.root.server.message}</p>
+            )}
+
             <Button
               type="submit"
               variant="primary"
-              className="w-100"
-              disabled={isSubmitting}
+              className="w-100 d-flex justify-content-center align-items-center gap-1"
+              disabled={isPending}
             >
-              {isSubmitting ? 'Creating account...' : 'Sign up'}
+              {isPending && (
+                <Spinner
+                  size="sm"
+                  className="border-2"
+                  animation="border"
+                  role="status"
+                />
+              )}
+              Sign up
             </Button>
           </Form>
           <p className="text-center mt-3 mb-0">

@@ -6,9 +6,9 @@ import {
 } from 'react-bootstrap';
 import { Outlet } from 'react-router';
 
-import TopBar from '../../top-bar';
 import './index.scss';
 import NavigationMenu from './navigation-menu';
+import TopBar from '../../top-bar';
 
 const DashboardLayout = () => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);

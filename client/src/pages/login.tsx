@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Card, Container, Form } from 'react-bootstrap';
+import { Button, Card, Container, Form, Spinner } from 'react-bootstrap';
 import { loginSchema, type LoginFormData } from '../schemas/auth';
 import { Link } from 'react-router';
 import CLIENT_ROUTES from '../constants/client-routes';
@@ -10,7 +10,8 @@ const Login = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    setError,
+    formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -19,10 +20,9 @@ const Login = () => {
     },
   });
 
-  const { mutate: login } = useLogin();
+  const { mutate: login, isPending } = useLogin(setError);
 
   const onSubmit = async (data: LoginFormData) => {
-    console.log('Login data:', data);
     login(data);
   };
 
@@ -61,17 +61,30 @@ const Login = () => {
               </Form.Control.Feedback>
             </Form.Group>
 
+            {errors.root?.server && (
+              <p className="text-danger">{errors.root.server.message}</p>
+            )}
+
             <Button
               type="submit"
               variant="primary"
-              className="w-100"
-              disabled={isSubmitting}
+              className="w-100 d-flex justify-content-center align-items-center gap-1"
+              disabled={isPending}
             >
-              {isSubmitting ? 'Logging in...' : 'Login'}
+              {isPending && (
+                <Spinner
+                  size="sm"
+                  className="border-2"
+                  animation="border"
+                  role="status"
+                />
+              )}
+              Login
             </Button>
           </Form>
           <p className="text-center mt-3 mb-0">
-            Don't have an account? <Link to={CLIENT_ROUTES.signup}>Sign up</Link>
+            Don't have an account?{' '}
+            <Link to={CLIENT_ROUTES.signup}>Sign up</Link>
           </p>
         </Card.Body>
       </Card>
