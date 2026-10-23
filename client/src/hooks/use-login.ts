@@ -1,17 +1,16 @@
 import useAppMutation from './use-app-mutation';
-import type { LoginPayload } from '../api/types';
 import AuthApi from '../api/auth';
 import type { UseFormSetError } from 'react-hook-form';
 import type { LoginFormData } from '../schemas/auth';
 import queryClient from '../lib/react-query';
 import QUERY_KEYS from '../constants/query-keys';
+import type { LoginPayload } from '../types';
 
 interface ApiError {
   detail?: string;
 }
 
 const useLogin = (setError: UseFormSetError<LoginFormData>) => {
-
   return useAppMutation({
     mutationFn: (data: LoginPayload) => AuthApi.login(data),
     onSuccess: () => {

@@ -37,6 +37,12 @@ class PriceSerializer(serializers.ModelSerializer):
         list_serializer_class = PriceListSerializer
 
 
+class ProductImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ("id", "image")
+
+
 class ProductSerializer(serializers.ModelSerializer):
     prices = PriceSerializer(many=True, read_only=False, allow_empty=False)
 
@@ -51,12 +57,14 @@ class ProductSerializer(serializers.ModelSerializer):
             "specification",
             "guarantee_start",
             "guarantee_end",
+            "image",
             "order",
             "prices",
             "created_at",
         )
         read_only_fields = (
             "id",
+            "image",
             "created_at",
         )
 
@@ -92,6 +100,25 @@ class OrderSerializer(serializers.ModelSerializer):
             "title",
             "description",
             "total_products",
+            "total_prices",
             "created_at",
         )
-        read_only_fields = ("id", "created_at")
+        read_only_fields = ("id", "total_prices", "created_at")
+
+
+class OrderDetailSerializer(OrderSerializer):
+    total_products = serializers.IntegerField(read_only=True)
+    products = ProductSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Order
+        fields = (
+            "id",
+            "title",
+            "description",
+            "total_products",
+            "products",
+            "total_prices",
+            "created_at",
+        )
+        read_only_fields = ("id", "total_prices", "created_at")

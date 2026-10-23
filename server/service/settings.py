@@ -127,6 +127,8 @@ AUTH_USER_MODEL = "user.User"
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
 STATIC_URL = "static/"
+MEDIA_ROOT = "files/media"
+MEDIA_URL = "/media/"
 
 
 # Email
@@ -141,12 +143,13 @@ MAILERS = {
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-    )
+    ),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=2),
-    "REFRESH_TOKEN_LIFETIME": timedelta(minutes=15),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "SIGNING_KEY": os.environ["JWT_SECRET"],
     "VERIFYING_KEY": os.environ["VERIFYING_KEY"],
 }

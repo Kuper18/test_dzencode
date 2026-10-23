@@ -1,4 +1,4 @@
-import type { SignupPayload } from '../api/types';
+import type { SignupPayload } from '../types/api';
 import AuthApi from '../api/auth';
 import useAppMutation from './use-app-mutation';
 import type { SignupFormData } from '../schemas/auth';

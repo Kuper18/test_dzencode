@@ -15,7 +15,15 @@ RUN pipenv install --dev --deploy --system
 
 COPY . .
 
-RUN useradd --no-create-home appuser
+RUN mkdir -p /files/media
+
+RUN adduser \
+    --disabled-password \
+    --no-create-home \
+    appuser
+
+RUN chown -R appuser /files/media
+RUN chmod -R 755 /files/media
 
 USER appuser
 

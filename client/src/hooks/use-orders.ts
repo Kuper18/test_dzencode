@@ -3,11 +3,12 @@ import QUERY_KEYS from '../constants/query-keys';
 import useAppQuery from './use-app-query';
 
 const useOrders = () => {
-  return useAppQuery({
+  const { data: orders, ...rest } = useAppQuery({
     queryKey: [QUERY_KEYS.orderList],
     queryFn: () => OrderApi.getOrders(),
   });
 
+  return { orders, ...rest };
 };
 
 export default useOrders;

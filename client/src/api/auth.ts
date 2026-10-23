@@ -1,7 +1,7 @@
 import axios from 'axios';
-import type { AuthResponse, LoginPayload, SignupPayload } from './types';
 import { API_CONFIG } from '../lib/axios-instance';
 import { setAuthTokens } from '../lib/auth-cookies';
+import type { AuthResponse, LoginPayload, SignupPayload } from '../types';
 
 class AuthApi {
   private static readonly loginUrl = '/users/login/';

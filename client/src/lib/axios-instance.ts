@@ -10,11 +10,11 @@ import {
   setAuthTokens,
   removeAuthTokens,
 } from './auth-cookies';
-import AuthApi from '../api/auth';
 import router from '../routes/router';
 import CLIENT_ROUTES from '../constants/client-routes';
 import QUERY_KEYS from '../constants/query-keys';
 import queryClient from './react-query';
+import type { AuthResponse } from '../types';
 
 export const API_CONFIG: AxiosRequestConfig = {
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -28,6 +28,7 @@ let refreshPromise: Promise<void> | null = null;
 axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const accessToken = getAccessToken();
+    console.log('current token', accessToken?.slice(-10));
 
     if (accessToken) {
       config.headers.set('Authorization', `Bearer ${accessToken}`);
@@ -66,9 +67,14 @@ async function handleError(error: AxiosError) {
         if (!refreshToken) {
           throw new Error('Refresh token is missing');
         }
-
-        const response = await AuthApi.refreshToken(refreshToken);
-        const { access } = response;
+        const response = await axios.post<Omit<AuthResponse, 'refresh'>>(
+          '/users/token-refresh/',
+          { refresh: refreshToken },
+          API_CONFIG
+        );
+        const { access } = response.data;
+        console.log('old access token', getAccessToken()?.slice(-10));
+        console.log('new access token', access.slice(-10));
 
         setAuthTokens(access);
       } catch (refreshError) {

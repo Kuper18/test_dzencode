@@ -1,6 +1,11 @@
+from collections import defaultdict
+from decimal import Decimal
+
 from django.db import models
-from django.db.models import UniqueConstraint
+from django.db.models import Sum, UniqueConstraint
 from rest_framework.exceptions import ValidationError
+
+from inventory.utils import create_custom_path
 
 
 class Price(models.Model):
@@ -40,19 +45,33 @@ class Order(models.Model):
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    @property
+    def total_prices(self):
+        totals = defaultdict(Decimal)
+
+        for product in self.products.all():
+            for price in product.prices.all():
+                totals[price.currency] += price.value
+
+        return dict(totals)
+
+    class Meta:
+        ordering = ("id",)
+
     def __str__(self):
         return self.title
 
 
 class Product(models.Model):
     title = models.CharField(max_length=255)
-    serial_number = models.PositiveIntegerField()
+    serial_number = models.PositiveIntegerField(unique=True)
     is_new = models.BooleanField(default=True)
     type = models.CharField(max_length=100)
     specification = models.TextField(blank=True)
 
     guarantee_start = models.DateField()
     guarantee_end = models.DateField()
+    image = models.ImageField(upload_to=create_custom_path, null=True, blank=True)
 
     order = models.ForeignKey(
         "Order",

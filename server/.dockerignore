@@ -29,3 +29,7 @@ docker-compose*.yml
 # Misc
 *.md
 .DS_Store
+
+venv/
+*.py[cod]
+.mypy_cache/

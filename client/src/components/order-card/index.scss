@@ -1,0 +1,102 @@
+.order-card {
+  color: #52627a;
+
+  &__title {
+    display: block;
+    max-width: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #526f83;
+    font-size: 1.1rem;
+    text-align: left;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+
+    &:hover {
+      color: #0d6efd;
+    }
+
+    &:focus-visible {
+      outline: 2px solid #0d6efd;
+      outline-offset: 4px;
+      border-radius: 2px;
+    }
+  }
+
+  &__products {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    border: 1px solid #d5e0e7;
+    border-radius: 50%;
+    color: #526f83;
+  }
+
+  &__product-count {
+    font-size: 1.25rem;
+    line-height: 1.2;
+  }
+
+  &__muted {
+    color: #8ba0b1;
+    font-size: 0.875rem;
+  }
+
+  &__date {
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  &__prices {
+    min-width: 170px;
+  }
+
+  &__price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  &__currency {
+    text-transform: uppercase;
+  }
+
+  &__delete {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem;
+    color: #8ba0ad;
+
+    &:hover {
+      color: #dc3545;
+    }
+
+    &:focus-visible {
+      box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    }
+  }
+}
+
+@media (max-width: 767.98px) {
+  .order-card {
+    &__prices {
+      min-width: 0;
+    }
+  }
+}

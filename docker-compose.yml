@@ -10,6 +10,7 @@ services:
       python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./server:/app
+      - media_files:/app/media
     env_file:
       - ./server/.env
     depends_on:
@@ -51,6 +52,14 @@ services:
     depends_on:
       - api
 
+  realtime:
+    container_name: realtime
+    build:
+      context: ./realtime
+    ports:
+      - "3001:3001"
+    restart: unless-stopped
+
   adminer:
     image: adminer
     restart: always
@@ -59,3 +68,4 @@ services:
 
 volumes:
   app_db:
+  media_files:

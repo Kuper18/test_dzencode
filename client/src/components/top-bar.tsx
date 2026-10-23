@@ -1,4 +1,5 @@
 import { Button, Container, Navbar } from 'react-bootstrap';
+import Clock from './clock';
 
 type Props = {
   onOpen: (val: boolean) => void;
@@ -22,9 +23,7 @@ const TopBar = ({ onOpen }: Props) => {
           <Navbar.Brand className="fw-bold mb-0">MyApp</Navbar.Brand>
         </div>
 
-        <Navbar.Text className="text-white d-none d-sm-block">
-          Welcome to your workspace
-        </Navbar.Text>
+        <Clock />
       </Container>
     </Navbar>
   );

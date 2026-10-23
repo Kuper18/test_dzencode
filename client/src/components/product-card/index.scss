@@ -1,0 +1,70 @@
+.product-card {
+  cursor: default;
+
+  &__image {
+    display: block;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+  }
+
+  &__image--empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.375rem;
+    background-color: var(--bs-tertiary-bg);
+    color: var(--bs-secondary-color);
+    font-size: 0.75rem;
+  }
+
+  &__muted {
+    color: var(--bs-secondary-color);
+    font-size: 0.875rem;
+  }
+
+  &__type {
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  &__guarantee {
+    font-size: 0.85rem;
+  }
+
+  &__prices {
+    text-align: right;
+  }
+
+  &__price {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.35rem;
+    font-weight: 500;
+  }
+
+  &__currency {
+    color: var(--bs-secondary-color);
+    font-size: 0.8rem;
+  }
+
+  &__default {
+    color: var(--bs-primary);
+    font-weight: 700;
+  }
+
+  &__specification {
+    color: var(--bs-secondary-color);
+    font-size: 0.875rem;
+    overflow-wrap: anywhere;
+  }
+
+  &__delete {
+    color: var(--bs-secondary-color);
+
+    &:hover {
+      color: var(--bs-danger);
+    }
+  }
+}
