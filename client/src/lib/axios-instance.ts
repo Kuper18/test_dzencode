@@ -73,8 +73,6 @@ async function handleError(error: AxiosError) {
           API_CONFIG
         );
         const { access } = response.data;
-        console.log('old access token', getAccessToken()?.slice(-10));
-        console.log('new access token', access.slice(-10));
 
         setAuthTokens(access);
       } catch (refreshError) {
