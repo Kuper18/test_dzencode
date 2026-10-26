@@ -9,6 +9,6 @@ RUN npm ci
 
 COPY . .
 
-EXPOSE 3001
+EXPOSE 8001
 
 CMD ["node", "app.js"]

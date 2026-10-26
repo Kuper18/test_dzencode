@@ -19,20 +19,20 @@ services:
         restart: true
 
   db:
-    image: postgres:18-alpine3.24
-    container_name: postgres-db
+    image: mysql:8.4
+    container_name: mysql-db
     restart: always
     ports:
-      - "5432:5432"
+      - "3306:3306"
     env_file:
       - ./server/.env
     volumes:
-      - app_db:/var/lib/postgresql
+      - mysql_data:/var/lib/mysql
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}" ]
+      test: [ "CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p$${MYSQL_ROOT_PASSWORD} --silent" ]
       interval: 10s
-      retries: 5
-      start_period: 30s
+      retries: 10
+      start_period: 40s
       timeout: 10s
 
   frontend:
@@ -57,7 +57,7 @@ services:
     build:
       context: ./realtime
     ports:
-      - "3001:3001"
+      - "8001:8001"
     restart: unless-stopped
 
   adminer:
@@ -67,5 +67,5 @@ services:
       - "8080:8080"
 
 volumes:
-  app_db:
+  mysql_data:
   media_files:

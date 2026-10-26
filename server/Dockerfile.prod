@@ -1,0 +1,40 @@
+FROM python:3.14-slim AS builder
+
+ENV PIP_NO_CACHE_DIR=1
+WORKDIR /build
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends gcc pkg-config default-libmysqlclient-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install pipenv
+COPY Pipfile Pipfile.lock ./
+RUN pipenv requirements > requirements.txt \
+    && python -m venv /opt/venv \
+    && /opt/venv/bin/pip install -r requirements.txt
+
+FROM python:3.14-slim
+
+LABEL maintainer="oleh.kuper.dev@gmail.com"
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PATH="/opt/venv/bin:$PATH"
+
+WORKDIR /app
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libmariadb3 \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN adduser --disabled-password appuser \
+    && mkdir -p /app/staticfiles /app/media \
+    && chown -R appuser /app/staticfiles /app/media
+
+COPY --from=builder /opt/venv /opt/venv
+COPY --chown=appuser . .
+
+USER appuser
+EXPOSE 8000
+
+CMD ["gunicorn", "service.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2"]

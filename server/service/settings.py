@@ -18,16 +18,20 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+def env_list(name, default=""):
+    return [x.strip() for x in os.environ.get(name, default).split(",") if x.strip()]
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-2#$xh=on!twg67ik+216e7hu8gu5dxw!x4$z-k-3b-0(^*!1%8"
+SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-dev-only-key")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", "*")
 
 
 # Application definition
@@ -82,12 +86,13 @@ WSGI_APPLICATION = "service.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ["POSTGRES_DB"],
-        "USER": os.environ["POSTGRES_USER"],
-        "PASSWORD": os.environ["POSTGRES_PASSWORD"],
-        "HOST": os.environ["POSTGRES_HOST"],
-        "PORT": os.environ["POSTGRES_PORT"],
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": os.environ["MYSQL_DATABASE"],
+        "USER": os.environ["MYSQL_USER"],
+        "PASSWORD": os.environ["MYSQL_PASSWORD"],
+        "HOST": os.environ["MYSQL_HOST"],
+        "PORT": os.environ["MYSQL_PORT"],
+        "OPTIONS": {"charset": "utf8mb4"},
     }
 }
 
@@ -127,7 +132,8 @@ AUTH_USER_MODEL = "user.User"
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
 STATIC_URL = "static/"
-MEDIA_ROOT = "files/media"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"
 
 
@@ -154,7 +160,7 @@ SIMPLE_JWT = {
     "VERIFYING_KEY": os.environ["VERIFYING_KEY"],
 }
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-]
+CORS_ALLOWED_ORIGINS = env_list(
+    "CORS_ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173"
+)
+CSRF_TRUSTED_ORIGINS = env_list("CSRF_TRUSTED_ORIGINS")

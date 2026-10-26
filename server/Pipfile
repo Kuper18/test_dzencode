@@ -5,11 +5,12 @@ name = "pypi"
 
 [packages]
 django = "*"
-psycopg = {extras = ["binary"], version = "*"}
 djangorestframework-simplejwt = "*"
 djangorestframework = "*"
 django-cors-headers = "*"
 pillow = "*"
+mysqlclient = "*"
+gunicorn = "*"
 
 [dev-packages]
 ruff = "*"
