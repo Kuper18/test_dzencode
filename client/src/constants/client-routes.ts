@@ -1,6 +1,6 @@
 const CLIENT_ROUTES = {
   home: '/',
-  orders: '/orders',
+  products: '/products',
   login: '/login',
   signup: '/signup',
 } as const;

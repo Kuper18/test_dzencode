@@ -18,11 +18,11 @@ export const privateRoutes: RouteObject[] = [
             children: [
               {
                 path: CLIENT_ROUTES.home,
-                Component: ProductPage,
+                Component: Order,
               },
               {
-                path: CLIENT_ROUTES.orders,
-                Component: Order,
+                path: CLIENT_ROUTES.products,
+                Component: ProductPage,
               },
             ],
           },

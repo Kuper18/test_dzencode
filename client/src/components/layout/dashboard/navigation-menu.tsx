@@ -10,8 +10,8 @@ import QUERY_KEYS from '../../../constants/query-keys';
 import './index.scss';
 
 const navigationItems = [
-  { label: 'Products', path: CLIENT_ROUTES.home },
-  { label: 'Orders', path: CLIENT_ROUTES.orders },
+  { label: 'Orders', path: CLIENT_ROUTES.home },
+  { label: 'Products', path: CLIENT_ROUTES.products },
 ];
 
 type Props = {

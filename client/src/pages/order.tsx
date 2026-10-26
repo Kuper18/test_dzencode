@@ -9,12 +9,13 @@ import OrderDetailCard from '../components/order-detail';
 
 import OrderTopHeader from '../components/order-top-header';
 import './index.scss';
+import { Spinner } from 'react-bootstrap';
 
 const OrdersPage = () => {
   const dispatch = useAppDispatch();
   const { selectedOrderId } = useAppSelector((state) => state.inventory);
   const { orders } = useOrders();
-  const { orderDetail } = useOrderDetail();
+  const { orderDetail, isLoading } = useOrderDetail();
 
   useEffect(() => {
     dispatch(setOrderId(null));
@@ -33,13 +34,19 @@ const OrdersPage = () => {
         </div>
       </div>
 
-      <div className="orders-layout__details">
-        <div className="orders-layout__details-inner">
-          {selectedOrderId && orderDetail && (
-            <OrderDetailCard order={orderDetail} />
-          )}
+      {isLoading ? (
+        <div className="d-flex justify-content-center align-items-center h-100 w-100">
+          <Spinner animation="border" />
         </div>
-      </div>
+      ) : (
+        <div className="orders-layout__details">
+          <div className="orders-layout__details-inner">
+            {selectedOrderId && orderDetail && (
+              <OrderDetailCard order={orderDetail} />
+            )}
+          </div>
+        </div>
+      )}
     </section>
   );
 };

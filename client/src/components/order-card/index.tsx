@@ -29,7 +29,9 @@ const OrderCard = ({ order }: Props) => {
 
   return (
     <>
-      <Card className="order-card dashboard__card shadow-none">
+      <Card
+        className={`order-card shadow-none ${order.id === selectedOrderId ? 'border-primary' : ''}`}
+      >
         <Card.Body className="p-3 px-lg-4">
           <Row className="align-items-center g-3">
             <Col xs={12} md>

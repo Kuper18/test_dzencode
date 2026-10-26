@@ -2,6 +2,7 @@ import { Modal as BootstrapModal } from 'react-bootstrap';
 import Button from 'react-bootstrap/esm/Button';
 import { setOpenProductForm } from '../../features/inventory/slice';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { Plus } from 'lucide-react';
 
 type Props = {
   children: React.ReactNode;
@@ -20,7 +21,8 @@ const Modal = ({ children, title, buttonTittle }: Props) => {
         variant="outline-success"
         onClick={() => dispatch(setOpenProductForm(true))}
       >
-        {buttonTittle ?? 'Add'}
+        <Plus />
+        {buttonTittle}
       </Button>
 
       <BootstrapModal
