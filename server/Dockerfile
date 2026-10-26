@@ -22,12 +22,8 @@ COPY . .
 
 RUN mkdir -p /files/media
 
-RUN adduser \
-    --disabled-password \
-    --no-create-home \
-    appuser
-
-RUN chown -R appuser /files/media
-RUN chmod -R 755 /files/media
+RUN mkdir -p /app/media
+RUN adduser --disabled-password --no-create-home appuser
+RUN chown -R appuser /app/media
 
 USER appuser
