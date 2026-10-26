@@ -1,8 +1,12 @@
-import { Nav } from 'react-bootstrap';
-import { NavLink } from 'react-router';
+import { Button, Nav } from 'react-bootstrap';
+import { NavLink, useNavigate } from 'react-router';
+import { useQueryClient } from '@tanstack/react-query';
 
 import CLIENT_ROUTES from '../../../constants/client-routes';
 import ProfileInfo from '../../profile-info';
+import AuthApi from '../../../api/auth';
+import QUERY_KEYS from '../../../constants/query-keys';
+
 import './index.scss';
 
 const navigationItems = [
@@ -15,6 +19,15 @@ type Props = {
 };
 
 const NavigationMenu = ({ onNavigate }: Props) => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const onLogout = () => {
+    AuthApi.logout();
+    queryClient.setQueryData([QUERY_KEYS.userProfile], null);
+    navigate(CLIENT_ROUTES.login);
+  };
+
   return (
     <div className="dashboard__sidebar-content">
       <ProfileInfo />
@@ -35,6 +48,10 @@ const NavigationMenu = ({ onNavigate }: Props) => {
           </NavLink>
         ))}
       </Nav>
+
+      <Button onClick={onLogout} variant="link" className="text-danger mt-3">
+        Logout
+      </Button>
     </div>
   );
 };

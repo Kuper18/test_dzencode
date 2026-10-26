@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { API_CONFIG } from '../lib/axios-instance';
-import { setAuthTokens } from '../lib/auth-cookies';
+import { removeAuthTokens, setAuthTokens } from '../lib/auth-cookies';
 import type { AuthResponse, LoginPayload, SignupPayload } from '../types';
 
 class AuthApi {
@@ -31,6 +31,10 @@ class AuthApi {
     );
 
     return this.saveTokens(response.data);
+  }
+
+  static logout() {
+    removeAuthTokens();
   }
 
   static async refreshToken(
