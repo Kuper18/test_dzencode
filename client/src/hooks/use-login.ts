@@ -1,16 +1,18 @@
-import useAppMutation from './use-app-mutation';
-import AuthApi from '../api/auth';
+import { useQueryClient } from '@tanstack/react-query';
 import type { UseFormSetError } from 'react-hook-form';
-import type { LoginFormData } from '../schemas/auth';
-import queryClient from '../lib/react-query';
+import AuthApi from '../api/auth';
 import QUERY_KEYS from '../constants/query-keys';
+import type { LoginFormData } from '../schemas/auth';
 import type { LoginPayload } from '../types';
+import useAppMutation from './use-app-mutation';
 
 interface ApiError {
   detail?: string;
 }
 
 const useLogin = (setError: UseFormSetError<LoginFormData>) => {
+  const queryClient = useQueryClient();
+
   return useAppMutation({
     mutationFn: (data: LoginPayload) => AuthApi.login(data),
     onSuccess: () => {

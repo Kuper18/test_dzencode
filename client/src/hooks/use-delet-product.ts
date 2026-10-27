@@ -1,9 +1,13 @@
+import { useQueryClient } from '@tanstack/react-query';
 import ProductApi from '../api/product';
 import QUERY_KEYS from '../constants/query-keys';
-import queryClient from '../lib/react-query';
+import { useAppSelector } from '../redux/hooks';
 import useAppMutation from './use-app-mutation';
 
 const useDeleteProduct = () => {
+  const { selectedOrderId } = useAppSelector((state) => state.inventory);
+  const queryClient = useQueryClient();
+
   return useAppMutation({
     mutationFn: (id: number) => ProductApi.deleteProduct(id),
     onSuccess: () => {
@@ -12,6 +16,9 @@ const useDeleteProduct = () => {
       });
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.orderList],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.orderDetail, selectedOrderId],
       });
     },
     onError: () => {

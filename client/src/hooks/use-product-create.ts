@@ -1,12 +1,12 @@
-import useAppMutation from './use-app-mutation';
+import { useQueryClient } from '@tanstack/react-query';
 import type { UseFormSetError } from 'react-hook-form';
-import queryClient from '../lib/react-query';
-import QUERY_KEYS from '../constants/query-keys';
-import type { ProductPayload } from '../types';
 import ProductApi from '../api/product';
+import QUERY_KEYS from '../constants/query-keys';
+import { setOpenProductForm } from '../features/inventory/slice';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import type { ProductFormValues } from '../schemas/product';
-import { setOpenProductForm } from '../features/inventory/slice';
+import type { ProductPayload } from '../types';
+import useAppMutation from './use-app-mutation';
 
 type CreateProductVariables = {
   payload: ProductPayload;
@@ -16,6 +16,7 @@ type CreateProductVariables = {
 const useProductCreate = (setError: UseFormSetError<ProductFormValues>) => {
   const { selectedOrderId } = useAppSelector((state) => state.inventory);
   const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
 
   return useAppMutation({
     mutationFn: async ({ payload, image }: CreateProductVariables) => {
@@ -41,7 +42,7 @@ const useProductCreate = (setError: UseFormSetError<ProductFormValues>) => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.orderList],
       });
-      dispatch(setOpenProductForm(false))
+      dispatch(setOpenProductForm(false));
     },
     onError: () => {
       setError('root.server', {

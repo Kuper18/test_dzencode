@@ -1,9 +1,11 @@
+import { useQueryClient } from '@tanstack/react-query';
 import OrderApi from '../api/order';
 import QUERY_KEYS from '../constants/query-keys';
-import queryClient from '../lib/react-query';
 import useAppMutation from './use-app-mutation';
 
 const useDeleteOrder = () => {
+  const queryClient = useQueryClient();
+
   return useAppMutation({
     mutationFn: (id: number) => OrderApi.deleteOrder(id),
     onSuccess: () => {

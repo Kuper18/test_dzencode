@@ -1,10 +1,12 @@
+import { useQueryClient } from '@tanstack/react-query';
 import OrderApi from '../api/order';
 import QUERY_KEYS from '../constants/query-keys';
-import queryClient from '../lib/react-query';
 import type { CreateOrderPayload } from '../types';
 import useAppMutation from './use-app-mutation';
 
 const useCreateOrder = (onSuccess: () => void) => {
+  const queryClient = useQueryClient();
+
   return useAppMutation({
     mutationFn: (data: CreateOrderPayload) => OrderApi.createOrder(data),
     onSuccess: () => {
