@@ -7,7 +7,6 @@ ENV PYTHONUNBUFFERED=1 \
 
 WORKDIR /app
 
-# gcc, pkg-config і dev-бібліотека потрібні для збірки mysqlclient
 RUN apt-get update \
     && apt-get install -y --no-install-recommends gcc pkg-config default-libmysqlclient-dev \
     && rm -rf /var/lib/apt/lists/*
