@@ -1,104 +1,56 @@
-# Inventory App (DzenCode test)
+# Inventory App
 
-A web app for managing **orders** and **products**: sign up / login, order and product CRUD, UAH/USD prices, image uploads, and a live count of active sessions.
+Small inventory web app (test assignment): users can register, log in, and manage **orders** and **products** (CRUD, UAH/USD prices, images). A Socket.IO service shows how many sessions are currently active.
 
-## Stack
+**Deployed app:** http://34.57.99.243/
 
-| Layer | Technologies |
-| --- | --- |
-| Frontend | React 19, TypeScript, Vite, Redux Toolkit, TanStack Query, React Router, React Bootstrap, Axios, Zod, Socket.IO Client |
-| Backend | Django 6, Django REST Framework, SimpleJWT, PostgreSQL, Pillow |
-| Realtime | Node.js, Express, Socket.IO |
-| Infrastructure | Docker Compose, Adminer |
-
-## Features
-
-- Email registration and login (JWT: access 5 minutes, refresh 7 days)
-- User profile
-- Orders: list, details, create, delete, totals per currency
-- Products: create, update, delete, filter by type, guarantee dates, unique serial number
-- Product prices: both **UAH and USD** required, exactly one default price
-- Product image upload
-- Clock and live Socket.IO active-session count
-
-## Repository layout
-
-```text
-.
-├── client/          # React SPA (Vite, port 5173)
-├── server/          # Django API (port 8000)
-├── realtime/        # Socket.IO server (port 3001)
-└── docker-compose.yml
-```
-
-## Services and ports
-
-| Service | URL |
-| --- | --- |
-| Frontend | http://localhost:5173 |
-| API | http://localhost:8000 |
-| Django Admin | http://localhost:8000/admin/ |
-| Socket.IO | http://localhost:3001 |
-| Adminer (DB UI) | http://localhost:8080 |
-| PostgreSQL | localhost:5432 |
-
-## API
-
-Base prefix: `/api`
-
-### Users (`/api/users/`)
-
-| Method | Path | Auth | Description |
+| Service | Folder | Dev | Prod |
 | --- | --- | --- | --- |
-| POST | `/login/` | no | JWT (`email`, `password`) |
-| POST | `/register/` | no | Sign up, returns tokens |
-| POST | `/token-refresh/` | no | Refresh access token |
-| GET/PUT/PATCH | `/me/` | yes | Current user profile |
+| React (Vite) | `client/` | http://localhost:5173 | http://localhost (port 80, Nginx) |
+| Django API | `server/` | http://localhost:8000 | proxied at `/api/` and `/admin/` |
+| Socket.IO | `realtime/` | http://localhost:8001 | proxied at `/socket.io/` |
+| MySQL 8.4 | Compose `db` | localhost:3306 | internal only |
+| Adminer | — | http://localhost:8080 | not started |
 
-### Inventory (`/api/inventory/`)
+Schema files in the repo root (reference only; Docker Compose still creates tables via Django migrations):
 
-All endpoints require JWT (`Authorization: Bearer <access>`).
-
-| Resource | Path | Notes |
-| --- | --- | --- |
-| Products | `/products/` | filter `?product-type=` |
-| Upload image | `POST /products/{id}/upload-image/` | `multipart/form-data`, field `image` |
-| Orders | `/orders/` | `GET /orders/{id}/` — details with products |
-
-## Quick start (Docker)
+- `database_schema.sql` — MySQL dump of the inventory database
+- `inventory_schema.mwb` — MySQL Workbench model of the same schema
 
 You need [Docker](https://docs.docker.com/get-docker/) and Docker Compose.
 
-### 1. Environment variables
+## 1. Environment files
 
-Create `server/.env`:
+Copy each `.env.example` to `.env` (same folder, drop the `.example` suffix). Do this **before** the first `docker compose` run.
 
-```env
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-POSTGRES_DB=inventory
-POSTGRES_HOST=db
-POSTGRES_PORT=5432
-APP_ENV=development
-SECRET_KEY=change-me
-JWT_SECRET=change-me-jwt
-VERIFYING_KEY=
+| Example | Copy to | Used for |
+| --- | --- | --- |
+| `.env.example` | `.env` | Prod build: `SERVER_IP` (Compose variable substitution) |
+| `client/.env.example` | `client/.env` | Vite API and Socket.IO URLs (dev) |
+| `server/.env.example` | `server/.env` | MySQL, Django, JWT |
+| `realtime/.env.example` | `realtime/.env` | `PORT` and `CORS_ORIGIN` (used by `realtime/app.js`) |
+
+PowerShell (from the repo root):
+
+```powershell
+Copy-Item .env.example .env
+Copy-Item client\.env.example client\.env
+Copy-Item server\.env.example server\.env
+Copy-Item realtime\.env.example realtime\.env
 ```
 
-For Docker, `POSTGRES_HOST` must be the Compose service name: `db`.
+macOS / Linux:
 
-Create `client/.env`:
-
-```env
-VITE_API_BASE_URL=http://localhost:8000/api
-SOCKET_URL=http://localhost:3001
+```bash
+cp .env.example .env
+cp client/.env.example client/.env
+cp server/.env.example server/.env
+cp realtime/.env.example realtime/.env
 ```
 
-Vite only exposes variables prefixed with `VITE_` to the browser. If the socket client does not connect, rename the variable to `VITE_SOCKET_URL` and use that name in the code.
+Keep `MYSQL_HOST=db` when running in Docker (`db` is the Compose service name).
 
-### 2. Run
-
-From the repository root:
+## 2. Development
 
 ```bash
 docker compose up --build
@@ -106,80 +58,58 @@ docker compose up --build
 
 Open http://localhost:5173, register an account, and use the app.
 
+- API: http://localhost:8000/api/
+- Django admin: http://localhost:8000/admin/ (create a superuser first, see below)
+- Adminer: http://localhost:8080 — system **MySQL**, server `db` (or `mysql-db`), credentials from `server/.env`
+
 Stop:
 
 ```bash
 docker compose down
 ```
 
-PostgreSQL data is stored in the `app_db` Docker volume. To reset the database:
+MySQL data lives in the `mysql_data` volume. Reset the database with `docker compose down -v`.
 
-```bash
-docker compose down -v
-```
-
-### Django Admin (optional)
+Optional Django superuser:
 
 ```bash
 docker compose exec api python manage.py createsuperuser
 ```
 
-Sign in at http://localhost:8000/admin/ with the superuser email.
+## 3. Production
 
-Adminer: http://localhost:8080 (system **PostgreSQL**, server `db` or `postgres-db`, credentials from `server/.env`).
+Set `SERVER_IP` in the **root** `.env` to the host people will open in the browser (`localhost` for a local prod smoke test, or the server IP/domain).
 
-## Local run without Docker
+Vite bakes `VITE_*` URLs in at **image build** time:
 
-You need **Python 3.14**, **Pipenv**, **Node.js 24+**, and a running PostgreSQL instance.
-
-### Database
-
-Create a database and user, then set `POSTGRES_HOST=localhost` (or your Postgres host) in `server/.env`.
-
-### Backend
-
-```bash
-cd server
-pipenv install --dev
-pipenv run python manage.py migrate
-pipenv run python manage.py runserver 0.0.0.0:8000
+```yaml
+VITE_API_BASE_URL: http://${SERVER_IP}/api
+VITE_SOCKET_URL: http://${SERVER_IP}
 ```
 
-### Realtime
+Also tighten env files for a real deploy, for example:
+
+- `server/.env`: `APP_ENV=production`, `DEBUG=False`
+- `ALLOWED_HOSTS` — the public host
+- `CORS_ALLOWED_ORIGINS` and `CSRF_TRUSTED_ORIGINS` — `http://<SERVER_IP>` (add `https://` if you terminate TLS)
+- `realtime/.env`: `CORS_ORIGIN=http://<SERVER_IP>` (must match the URL in the browser)
+
+Then:
 
 ```bash
-cd realtime
-npm ci
-node app.js
+docker compose -f docker-compose.prod.yml up --build -d
 ```
 
-### Frontend
+Open http://localhost (or `http://<SERVER_IP>`). Nginx on port 80 serves the SPA and proxies API, admin, static/media, and Socket.IO.
+
+Stop:
 
 ```bash
-cd client
-npm install
-npm run dev
+docker compose -f docker-compose.prod.yml down
 ```
 
-## Useful commands
+## Notes
 
-```bash
-# client
-cd client && npm run lint
-cd client && npm run build
-
-# server (from the server directory)
-pipenv run ruff check .
-pipenv run python manage.py test
-```
-
-## Data model (short)
-
-- **User** — email as login (no username)
-- **Order** — title, description, created at; totals are derived from nested product prices
-- **Product** — belongs to an order (`CASCADE`), type, specification, guarantee, image
-- **Price** — value + currency (`UAH` / `USD`), unique pair of product + currency
-
-## License
-
-Educational / test project.
+- Change example secrets (`SECRET_KEY`, `JWT_SECRET`, DB passwords) before any shared or public deploy.
+- After changing `SERVER_IP` or `client/.env`, rebuild the frontend image so Vite picks up new URLs (`--build`).
+- Socket.IO reads `PORT` (default `8001`) and `CORS_ORIGIN` (default `http://localhost:5173`) from the environment. The prod Compose file injects `realtime/.env`; the dev file does not, so those defaults apply unless you add `env_file` there too.
