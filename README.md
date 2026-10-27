@@ -1,16 +1,17 @@
 # Inventory App
 
-Small inventory web app (test assignment): users can register, log in, and manage **orders** and **products** (CRUD, UAH/USD prices, images). A Socket.IO service shows how many sessions are currently active.
+Small inventory web app (test assignment): users can register, log in, and manage **orders** and **products** (CRUD,
+UAH/USD prices, images). A Socket.IO service shows how many sessions are currently active.
 
 **Deployed app:** http://34.57.99.243/
 
-| Service | Folder | Dev | Prod |
-| --- | --- | --- | --- |
-| React (Vite) | `client/` | http://localhost:5173 | http://localhost (port 80, Nginx) |
-| Django API | `server/` | http://localhost:8000 | proxied at `/api/` and `/admin/` |
-| Socket.IO | `realtime/` | http://localhost:8001 | proxied at `/socket.io/` |
-| MySQL 8.4 | Compose `db` | localhost:3306 | internal only |
-| Adminer | — | http://localhost:8080 | not started |
+| Service      | Folder       | Dev                   | Prod                              |
+|--------------|--------------|-----------------------|-----------------------------------|
+| React (Vite) | `client/`    | http://localhost:5173 | http://localhost (port 80, Nginx) |
+| Django API   | `server/`    | http://localhost:8000 | proxied at `/api/` and `/admin/`  |
+| Socket.IO    | `realtime/`  | http://localhost:8001 | proxied at `/socket.io/`          |
+| MySQL 8.4    | Compose `db` | localhost:3306        | internal only                     |
+| Adminer      | —            | http://localhost:8080 | not started                       |
 
 Schema files in the repo root (reference only; Docker Compose still creates tables via Django migrations):
 
@@ -21,14 +22,15 @@ You need [Docker](https://docs.docker.com/get-docker/) and Docker Compose.
 
 ## 1. Environment files
 
-Copy each `.env.example` to `.env` (same folder, drop the `.example` suffix). Do this **before** the first `docker compose` run.
+Copy each `.env.example` to `.env` (same folder, drop the `.example` suffix). Do this **before** the first
+`docker compose` run.
 
-| Example | Copy to | Used for |
-| --- | --- | --- |
-| `.env.example` | `.env` | Prod build: `SERVER_IP` (Compose variable substitution) |
-| `client/.env.example` | `client/.env` | Vite API and Socket.IO URLs (dev) |
-| `server/.env.example` | `server/.env` | MySQL, Django, JWT |
-| `realtime/.env.example` | `realtime/.env` | `PORT` and `CORS_ORIGIN` (used by `realtime/app.js`) |
+| Example                 | Copy to         | Used for                                                |
+|-------------------------|-----------------|---------------------------------------------------------|
+| `.env.example`          | `.env`          | Prod build: `SERVER_IP` (Compose variable substitution) |
+| `client/.env.example`   | `client/.env`   | Vite API and Socket.IO URLs (dev)                       |
+| `server/.env.example`   | `server/.env`   | MySQL, Django, JWT                                      |
+| `realtime/.env.example` | `realtime/.env` | `PORT` and `CORS_ORIGIN` (used by `realtime/app.js`)    |
 
 PowerShell (from the repo root):
 
@@ -78,7 +80,8 @@ docker compose exec api python manage.py createsuperuser
 
 ## 3. Production
 
-Set `SERVER_IP` in the **root** `.env` to the host people will open in the browser (`localhost` for a local prod smoke test, or the server IP/domain).
+Set `SERVER_IP` in the **root** `.env` to the host people will open in the browser (`localhost` for a local prod smoke
+test, or the server IP/domain).
 
 Vite bakes `VITE_*` URLs in at **image build** time:
 
@@ -100,7 +103,8 @@ Then:
 docker compose -f docker-compose.prod.yml up --build -d
 ```
 
-Open http://localhost (or `http://<SERVER_IP>`). Nginx on port 80 serves the SPA and proxies API, admin, static/media, and Socket.IO.
+Open http://localhost (or `http://<SERVER_IP>`). Nginx on port 80 serves the SPA and proxies API, admin, static/media,
+and Socket.IO.
 
 Stop:
 
@@ -112,4 +116,10 @@ docker compose -f docker-compose.prod.yml down
 
 - Change example secrets (`SECRET_KEY`, `JWT_SECRET`, DB passwords) before any shared or public deploy.
 - After changing `SERVER_IP` or `client/.env`, rebuild the frontend image so Vite picks up new URLs (`--build`).
-- Socket.IO reads `PORT` (default `8001`) and `CORS_ORIGIN` (default `http://localhost:5173`) from the environment. The prod Compose file injects `realtime/.env`; the dev file does not, so those defaults apply unless you add `env_file` there too.
+- Socket.IO reads `PORT` (default `8001`) and `CORS_ORIGIN` (default `http://localhost:5173`) from the environment. The
+  prod Compose file injects `realtime/.env`; the dev file does not, so those defaults apply unless you add `env_file`
+  there too.
+
+## Video how the app works
+
+https://www.loom.com/share/927c94292e0a4ab09b3a8660f48c18a3
